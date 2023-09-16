@@ -1,7 +1,17 @@
-import re
 import jieba
 from collections import Counter
 import math
+import sys
+
+#读取文件中的文本
+def read_file(file_name):
+    try:
+        with open(file_name, 'r', encoding='utf-8') as file:
+            text = file.read()
+        return text
+    except FileNotFoundError:
+        print(f"File not found in: {file_name}")
+        sys.exit(1)
 
 
 # 将文本分词并转化为词汇列表
@@ -28,11 +38,10 @@ def cosine_similarity(vec1, vec2):
     return similarity
 
 
-# 示例汉字文本
-with open("E:\Python\PycharmProjects\personalHomework\测试文本\orig.txt","r",encoding="utf-8") as file:
-    text1 = file.read()
-with open("E:\Python\PycharmProjects\personalHomework\测试文本\orig_0.8_add.txt","r",encoding="utf-8") as file:
-    text2 = file.read()
+#从控制台给出的文件路径读取文本
+
+text1 = read_file(sys.argv[1])
+text2 = read_file(sys.argv[2])
 
 # 分词并获取词频向量
 tokens1 = tokenize(text1)
@@ -43,5 +52,12 @@ vector2 = get_vector(tokens2)
 
 # 计算余弦相似性
 similarity_1_2 = cosine_similarity(vector1, vector2)
+print(type(similarity_1_2))
 
-print("两个文本的重复率是:", similarity_1_2)
+try:
+    with open(sys.argv[3], 'w') as file:
+        # 将 float 变量转换为字符串，并写入文件
+        file.write(str(similarity_1_2))
+    print(f"成功将 查重率 写入到文件中")
+except Exception as e:
+    print(f"写入文件时发生错误: {str(e)}")
